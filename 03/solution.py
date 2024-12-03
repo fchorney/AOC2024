@@ -1,4 +1,6 @@
 import argparse
+import re
+from operator import mul
 from pathlib import Path
 from typing import Any, Optional, Sequence
 
@@ -6,18 +8,39 @@ from icecream import ic
 
 
 def solution1(input_path: Path) -> None:
-    pass
+    input_data = parse_input(input_path)
+
+    sum = 0
+    all_mults_re = re.compile(r"mul\((\d+),(\d+)\)")
+    for mult in all_mults_re.finditer(input_data):
+        sum += mul(*list(map(int, mult.groups())))
+
+    print(f"Solution 1: {sum}")
 
 
 def solution2(input_path: Path) -> None:
-    pass
+    input_data = parse_input(input_path)
+
+    sum = 0
+    do = True
+    all_mults_re = re.compile(r"(?P<cmd>mul|do|don't)\((?:(?P<a>\d+),(?P<b>\d+))?\)")
+    for mult in all_mults_re.finditer(input_data):
+        match (mult.group("cmd")):
+            case "mul":
+                if not do:
+                    continue
+                sum += int(mult.group("a")) * int(mult.group("b"))
+            case "do":
+                do = True
+            case "don't":
+                do = False
+
+    print(f"Solution 2: {sum}")
 
 
-def parse_input(input_path: Path, solution: int = 1) -> Any:
-    # This might change based on the solution asked for
+def parse_input(input_path: Path, solution: int = 1) -> str:
     with input_path.open() as f:
-        for line in map(str.strip, f.readlines()):
-            pass
+        return f.read()
 
 
 def main(args: Optional[Sequence[str]] = None) -> int:
