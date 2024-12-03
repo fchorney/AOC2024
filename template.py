@@ -44,7 +44,7 @@ def parse_args(args: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
 
     parser.add_argument("input_path", type=lambda p: Path(p).absolute())
-    parser.add_argument("solution", type=int, default=1, values=[1, 2])
+    parser.add_argument("-s", "--solution", type=int, default=1, choices=[1, 2])
 
     parser.add_argument("-q", "--quiet", action="store_true")
 
