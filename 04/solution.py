@@ -1,11 +1,11 @@
-import argparse
 import re
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
-from typing import Optional, Sequence
 
 from icecream import ic
+
+from libaoc import solve
 
 
 def rotate_matrix_45(matrix: list[list[str]], right: bool = True) -> list[list[str]]:
@@ -52,7 +52,7 @@ def rotate_matrix_45(matrix: list[list[str]], right: bool = True) -> list[list[s
 
 def rotate_matrix_90(matrix: list[list[str]]) -> list[list[str]]:
     new_matrix = deepcopy(matrix)
-    return list(zip(*new_matrix))[::-1]
+    return list(zip(*new_matrix, strict=False))[::-1]
 
 
 def flip_matrix(matrix: list[list[str]], horizontal: bool = True) -> list[list[str]]:
@@ -72,7 +72,7 @@ def flip_matrix(matrix: list[list[str]], horizontal: bool = True) -> list[list[s
 
 
 def condense_matrix(matrix: list[list[str]]) -> list[str]:
-    return ["".join(row) for row in matrix]
+    return [''.join(row) for row in matrix]
 
 
 def solution1(input_path: Path) -> None:
@@ -90,12 +90,12 @@ def solution1(input_path: Path) -> None:
     occurrences = 0
     for matrix in [matrix, matrix_90, matrix_45r, matrix_45l]:
         for i, row in enumerate(matrix):
-            for search_term in [r"XMAS", r"SAMX"]:
+            for search_term in [r'XMAS', r'SAMX']:
                 all_items = re.findall(search_term, row)
                 occurrences += len(all_items)
                 ic(i, row, all_items, len(all_items))
 
-    print(f"Solution 1: {occurrences}")
+    print(f'Solution 1: {occurrences}')
 
 
 def solution2(input_path: Path) -> None:
@@ -107,24 +107,24 @@ def solution2(input_path: Path) -> None:
     matrix_45l = condense_matrix(rotate_matrix_45(data, right=False))
 
     rows = len(data)
-    cols = len(data[0])
-
     mapping: dict[tuple[int, int], int] = defaultdict(int)
 
-    a_45r: list[tuple[int, int]] = []
-    ic(matrix_45r)
-    for i, row in enumerate(matrix_45r):
-        for search_term in [r"MAS", r"SAM"]:
-            if not (match := re.finditer(search_term, row)):
-                continue
-            for item in match:
-                s = item.span()
-                a_idx = s[1] - 2
-                a_45r.append((i, a_idx))
-                ic(i, row, a_idx)
-    ic(a_45r)
+    def find_a(matrix: list[str]) -> list[tuple[int, int]]:
+        a_list = []
+        ic(matrix)
+        for i, row in enumerate(matrix):
+            for search_term in [r'MAS', r'SAM']:
+                if not (match := re.finditer(search_term, row)):
+                    continue
+                for item in match:
+                    s = item.span()
+                    a_idx = s[1] - 2
+                    a_list.append((i, a_idx))
+                    ic(i, row, a_idx)
+        ic(a_list)
+        return a_list
 
-    ic(rows, cols)
+    a_45r = find_a(matrix_45r)
     for r, c in a_45r:
         if r < rows:
             orig_r = c
@@ -136,20 +136,7 @@ def solution2(input_path: Path) -> None:
         mapping[(orig_r, orig_c)] += 1
         ic(r, c, orig_r, orig_c, data[orig_r][orig_c])
 
-    a_45l: list[tuple[int, int]] = []
-    ic(matrix_45l)
-    for i, row in enumerate(matrix_45l):
-        for search_term in [r"MAS", r"SAM"]:
-            if not (match := re.finditer(search_term, row)):
-                continue
-            for item in match:
-                s = item.span()
-                a_idx = s[1] - 2
-                a_45l.append((i, a_idx))
-                ic(i, row, a_idx)
-    ic(a_45l)
-
-    ic(rows, cols)
+    a_45l = find_a(matrix_45l)
     for r, c in a_45l:
         if r < rows:
             orig_r = r - c
@@ -164,10 +151,10 @@ def solution2(input_path: Path) -> None:
     ic(mapping)
 
     occurrence = sum(1 for v in mapping.values() if v > 1)
-    print(f"Solution 2: {occurrence}")
+    print(f'Solution 2: {occurrence}')
 
 
-def parse_input(input_path: Path, solution: int = 1) -> list[list[str]]:
+def parse_input(input_path: Path) -> list[list[str]]:
     data: list[list[str]] = []
     with input_path.open() as f:
         for line in map(str.strip, f.readlines()):
@@ -176,45 +163,5 @@ def parse_input(input_path: Path, solution: int = 1) -> list[list[str]]:
     return data
 
 
-def main(args: Optional[Sequence[str]] = None) -> int:
-    pargs = parse_args(args)
-    test = pargs.test
-    solution = pargs.solution
-
-    input_path = Path("input.txt")
-    if test:
-        input_path = Path(f"test_input_{test}.txt")
-
-    print(f"Using Input File: {input_path}")
-    print(f"Running Solution: {solution}")
-
-    if not input_path.exists():
-        print("Input file does not exist")
-        return -1
-
-    if pargs.quiet:
-        ic.disable()
-
-    if solution == 1:
-        solution1(input_path)
-    elif solution == 2:
-        solution2(input_path)
-    else:
-        print(f"Solution [{solution}] doesn't exist")
-        return -1
-
-    return 0
-
-
-def parse_args(args: Optional[Sequence[str]] = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-t", "--test", type=int)
-    parser.add_argument("-s", "--solution", type=int, default=1, choices=[1, 2])
-    parser.add_argument("-q", "--quiet", action="store_true")
-
-    return parser.parse_args(args)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    solve(solution1, solution2)

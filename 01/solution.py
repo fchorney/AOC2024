@@ -1,11 +1,11 @@
-import argparse
 import re
 import sys
 from collections import Counter
 from pathlib import Path
-from typing import Any, Optional, Sequence
 
 from icecream import ic
+
+from libaoc import solve
 
 LOCATIONS_TYPE = tuple[list[int], list[int]]
 
@@ -25,7 +25,7 @@ def solution1(input_path: Path) -> None:
         delta += abs(loc_b - loc_a)
         idx_b += 1
 
-    print(f"Solution 1: {delta}")
+    print(f'Solution 1: {delta}')
 
 
 def solution2(input_path: Path) -> None:
@@ -43,62 +43,20 @@ def solution2(input_path: Path) -> None:
         count = count_map.get(loc_a, 0)
         similarity_score += loc_a * count
 
-    print(f"Solution 2: {similarity_score}")
+    print(f'Solution 2: {similarity_score}')
 
 
-def parse_input(input_path: Path, solution: int = 1) -> LOCATIONS_TYPE:
-    # This might change based on the solution asked for
-
+def parse_input(input_path: Path) -> LOCATIONS_TYPE:
     locations: LOCATIONS_TYPE = ([], [])
     with input_path.open() as f:
         for line in map(str.strip, f.readlines()):
-            if not (match := re.match(r"(?P<first>\d+)\s+(?P<second>\d+)", line)):
+            if not (match := re.match(r'(?P<first>\d+)\s+(?P<second>\d+)', line)):
                 ic(f"Could not parse '{line}'")
                 sys.exit(-1)
-            locations[0].append(int(match.group("first")))
-            locations[1].append(int(match.group("second")))
+            locations[0].append(int(match.group('first')))
+            locations[1].append(int(match.group('second')))
     return locations
 
 
-def main(args: Optional[Sequence[str]] = None) -> int:
-    pargs = parse_args(args)
-    test = pargs.test
-    solution = pargs.solution
-
-    input_path = Path("input.txt")
-    if test:
-        input_path = Path(f"test_input_{test}.txt")
-
-    print(f"Using Input File: {input_path}")
-    print(f"Running Solution: {solution}")
-
-    if not input_path.exists():
-        print("Input file does not exist")
-        return -1
-
-    if pargs.quiet:
-        ic.disable()
-
-    if solution == 1:
-        solution1(input_path)
-    elif solution == 2:
-        solution2(input_path)
-    else:
-        print(f"Solution [{solution}] doesn't exist")
-        return -1
-
-    return 0
-
-
-def parse_args(args: Optional[Sequence[str]] = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-t", "--test", type=int)
-    parser.add_argument("-s", "--solution", type=int, default=1, choices=[1, 2])
-    parser.add_argument("-q", "--quiet", action="store_true")
-
-    return parser.parse_args(args)
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    solve(solution1, solution2)
