@@ -32,10 +32,15 @@ class Map:
         
         self.guard_on_map = True
         self._visited: set[Point] = set()
+        self._obstacles: set[Point] = set()
     
     @property
     def visited(self) -> int:
         return len(self._visited)
+    
+    @property
+    def obstacles(self) -> int:
+        return len(self._obstacles)
     
     def parse_map(self, map_data: str) -> None:
         for r_idx, line in enumerate(map_data.splitlines()):
@@ -126,12 +131,47 @@ class Map:
             
         return next_step, curr_direction
     
+    def _find_loop_obstacles(self) -> None:
+        # If we're already right in front of an obstacle, we don't need to check this
+        next_guard_step = self._get_step_point(self._guard_loc, self._guard_dir)
+        if self._is_obstructed(next_guard_step) or not self._is_on_map(next_guard_step):
+            return
+
+        # Cast out a ray to your right, and see if we hit an obstacle we've previously hit
+        ray_dir = self._turn_90(self._guard_dir)
+        curr_step = self._guard_loc
+
+        # Walk the path until we hit an obstacle
+        next_step = self._get_step_point(curr_step, ray_dir)
+        
+        # The case where your immediate right is an obstacle, we still want to check what would happen
+        # if we got turned around
+        if self._is_obstructed(next_step):
+            ray_dir = self._turn_90(ray_dir)
+            next_step = self._get_step_point(curr_step, ray_dir)
+        
+        while True:
+            if not self._is_on_map(next_step):
+                # We've walked off the map, no loops here
+                return
+            elif self._is_obstructed(next_step):
+                if curr_step not in self._visited:
+                    return
+                break
+            curr_step = next_step
+            next_step = self._get_step_point(curr_step, ray_dir)
+
+        # We've potentially found a loop, and the next step isn't already an obstacle
+        self._obstacles.add(next_guard_step)
+    
     def step(self, find_loop_obstacles: bool = False) -> None:
         # TODO: Find Loop Obstacles
         # For each step, if you were to turn right and follow the path...
         # If you hit an obstacle you've already hit before then it's a loop
         # else it's not a loop
         
+        if find_loop_obstacles:
+            self._find_loop_obstacles()       
         
         # Get our next step
         next_step, next_direction = self._find_next_step(self._guard_loc, self._guard_dir)

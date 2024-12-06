@@ -33,7 +33,7 @@ def solution2(input_path: Path) -> int:
 
     _map.display()
 
-    return _map.visited
+    return _map.obstacles
 
 
 def parse_input(input_path: Path) -> str:
