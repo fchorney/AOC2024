@@ -7,17 +7,17 @@ from libaoc import solve
 
 def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
-    
+
     _map = Map()
     _map.parse_map(data)
-    
+
     _map.display()
-    
+
     while _map.guard_on_map:
         _map.step()
-    
+
     _map.display()
-    
+
     return _map.visited
 
 
