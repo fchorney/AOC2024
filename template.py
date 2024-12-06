@@ -5,14 +5,18 @@ from icecream import ic
 from libaoc import solve
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
     ic(data)
+    
+    return -1
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
     ic(data)
+    
+    return -1
 
 
 def parse_input(input_path: Path) -> list[str]:
@@ -24,4 +28,6 @@ def parse_input(input_path: Path) -> list[str]:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    answer1 = -999
+    answer2 = -999
+    solve(solution1, solution2, (answer1, answer2))

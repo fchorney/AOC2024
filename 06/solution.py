@@ -1,27 +1,47 @@
 from pathlib import Path
 
-from icecream import ic
+from utils import Map
 
 from libaoc import solve
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
-    ic(data)
+    
+    _map = Map()
+    _map.parse_map(data)
+    
+    _map.display()
+    
+    while _map.guard_on_map:
+        _map.step()
+    
+    _map.display()
+    
+    return _map.visited
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
-    ic(data)
+    _map = Map()
+    _map.parse_map(data)
+
+    _map.display()
+
+    while _map.guard_on_map:
+        _map.step(find_loop_obstacles=True)
+
+    _map.display()
+
+    return _map.visited
 
 
-def parse_input(input_path: Path) -> list[str]:
-    data = []
+def parse_input(input_path: Path) -> str:
     with input_path.open() as f:
-        for line in map(str.strip, f.readlines()):
-            data.append(line)
-    return data
+        return f.read()
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    answer1 = 4988
+    answer2 = -999
+    solve(solution1, solution2, (answer1, answer2))
