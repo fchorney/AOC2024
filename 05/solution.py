@@ -8,7 +8,7 @@ from libaoc import solve
 Update_T: type = list[list[int]]
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     rules, updates = parse_input(input_path)
     ic(rules)
 
@@ -17,10 +17,10 @@ def solution1(input_path: Path) -> None:
         if rules.is_correct(update):
             ic(idx, update)
             middle_sum += update[int(len(update) / 2)]
-    print(f'Solution 1: {middle_sum}')
+    return middle_sum
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     rules, updates = parse_input(input_path)
     ic(rules)
 
@@ -30,8 +30,7 @@ def solution2(input_path: Path) -> None:
             ic(idx, update)
             fixed_update = rules.fix(update)
             middle_sum += fixed_update[int(len(fixed_update) / 2)]
-    print(f'Solution 2: {middle_sum}')
-    print(f'Max Retries: {rules._max_retries}')
+    return middle_sum
 
 
 def parse_input(input_path: Path) -> tuple[Rules, Update_T]:
@@ -52,4 +51,4 @@ def parse_input(input_path: Path) -> tuple[Rules, Update_T]:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    solve(solution1, solution2, (5588, 5331))

@@ -5,7 +5,7 @@ from pathlib import Path
 from libaoc import solve
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     input_data = parse_input(input_path)
 
     total = 0
@@ -13,10 +13,10 @@ def solution1(input_path: Path) -> None:
     for mult in all_mults_re.finditer(input_data):
         total += mul(*list(map(int, mult.groups())))
 
-    print(f'Solution 1: {total}')
+    return total
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     input_data = parse_input(input_path)
 
     total = 0
@@ -33,7 +33,7 @@ def solution2(input_path: Path) -> None:
             case "don't":
                 do = False
 
-    print(f'Solution 2: {total}')
+    return total
 
 
 def parse_input(input_path: Path) -> str:
@@ -42,4 +42,4 @@ def parse_input(input_path: Path) -> str:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    solve(solution1, solution2, (167650499, 95846796))

@@ -75,7 +75,7 @@ def condense_matrix(matrix: list[list[str]]) -> list[str]:
     return [''.join(row) for row in matrix]
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
 
     # Regular matrix
@@ -95,10 +95,10 @@ def solution1(input_path: Path) -> None:
                 occurrences += len(all_items)
                 ic(i, row, all_items, len(all_items))
 
-    print(f'Solution 1: {occurrences}')
+    return occurrences
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
 
     # 45 Degree Right Matrix
@@ -150,8 +150,7 @@ def solution2(input_path: Path) -> None:
 
     ic(mapping)
 
-    occurrence = sum(1 for v in mapping.values() if v > 1)
-    print(f'Solution 2: {occurrence}')
+    return sum(1 for v in mapping.values() if v > 1)
 
 
 def parse_input(input_path: Path) -> list[list[str]]:
@@ -164,4 +163,4 @@ def parse_input(input_path: Path) -> list[list[str]]:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    solve(solution1, solution2, (2521, 1912))

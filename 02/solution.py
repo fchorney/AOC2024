@@ -35,13 +35,12 @@ def is_safe(report: list[int]) -> bool:
     return True
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     reports = parse_input(input_path)
-    safe = sum(1 for report in reports if is_safe(report))
-    print(f'Solution 1: {safe}')
+    return sum(1 for report in reports if is_safe(report))
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     reports = parse_input(input_path)
 
     safe = 0
@@ -63,7 +62,7 @@ def solution2(input_path: Path) -> None:
 
             idx += 1
 
-    print(f'Solution 2: {safe}')
+    return safe
 
 
 def parse_input(input_path: Path) -> Any:
@@ -75,4 +74,4 @@ def parse_input(input_path: Path) -> Any:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    solve(solution1, solution2, (606, 644))

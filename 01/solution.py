@@ -10,7 +10,7 @@ from libaoc import solve
 LOCATIONS_TYPE = tuple[list[int], list[int]]
 
 
-def solution1(input_path: Path) -> None:
+def solution1(input_path: Path) -> int:
     locations = parse_input(input_path)
 
     # Sort both lists
@@ -25,10 +25,10 @@ def solution1(input_path: Path) -> None:
         delta += abs(loc_b - loc_a)
         idx_b += 1
 
-    print(f'Solution 1: {delta}')
+    return delta
 
 
-def solution2(input_path: Path) -> None:
+def solution2(input_path: Path) -> int:
     locations = parse_input(input_path)
 
     # Sort both lists
@@ -43,7 +43,7 @@ def solution2(input_path: Path) -> None:
         count = count_map.get(loc_a, 0)
         similarity_score += loc_a * count
 
-    print(f'Solution 2: {similarity_score}')
+    return similarity_score
 
 
 def parse_input(input_path: Path) -> LOCATIONS_TYPE:
@@ -59,4 +59,4 @@ def parse_input(input_path: Path) -> LOCATIONS_TYPE:
 
 
 if __name__ == '__main__':
-    solve(solution1, solution2)
+    solve(solution1, solution2, (1666427, 24316233))
