@@ -2,49 +2,76 @@ import itertools
 from collections import defaultdict
 from pathlib import Path
 
-from icecream import ic
-
 from libaoc import solve
+from libaoc.utils import chunks
 
 
-def solution1(input_path: Path) -> int:
-    data = parse_input(input_path)
+def solve_eq(eq: list[int | str], test: int) -> bool:
+    result = eq[0]
+    for op, v in chunks(eq[1:], 2):
+        match op:
+            case '+':
+                result += v
+            case '*':
+                result *= v
+            case '||':
+                result = int(f'{result}{v}')
+    if result == test:
+        return True
+    return False
 
-    solution = 0
+
+def solve_part_1(data: dict[int, list[str]]) -> tuple[set[int], set[int]]:
+    solved: set[int] = set()
+    unsolved: set[int] = set()
+
     for t, v in data.items():
         slots = len(v) - 1
-        permutations = itertools.product(["+", "*"], repeat=slots)
+        permutations = itertools.product(['+', '*'], repeat=slots)
 
         for p in permutations:
             _eq = [list(z) for z in zip(v, p)]
             eq = [int(x) if x.isnumeric() else x for xs in _eq for x in xs] + [int(v[-1])]
 
-            result = eq[0]
-            plus = False
-            for item in eq[1:]:
-                if item == '+':
-                    plus = True
-                    continue
-                if item == "*":
-                    plus = False
-                    continue
-                result = result + item if plus else result * item
-
-            ic(t, v, result, result == t)
-            if result == t:
-                solution += result
+            if solve_eq(eq, t):
+                solved.add(t)
                 break
+        else:
+            unsolved.add(t)
 
-    # TODO: Get rid of equivalent permutations
+    return solved, unsolved
 
-    return solution
+
+def solution1(input_path: Path) -> int:
+    data = parse_input(input_path)
+    solved, _ = solve_part_1(data)
+    return sum(solved)
 
 
 def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
-    ic(data)
 
-    return -1
+    solved, unsolved = solve_part_1(data)
+
+    # Only attempt to solve the unsolved equations
+    for t in unsolved:
+        v = data[t]
+        slots = len(v) - 1
+        permutations = itertools.product(['+', '*', '||'], repeat=slots)
+
+        for p in permutations:
+            # We've already tried the +, * combos, only try the combos with concat
+            if '||' not in p:
+                continue
+
+            _eq = [list(z) for z in zip(v, p)]
+            eq = [int(x) if x.isnumeric() else x for xs in _eq for x in xs] + [int(v[-1])]
+
+            if solve_eq(eq, t):
+                solved.add(t)
+                break
+
+    return sum(solved)
 
 
 def parse_input(input_path: Path) -> dict[int, list[str]]:
@@ -58,5 +85,5 @@ def parse_input(input_path: Path) -> dict[int, list[str]]:
 
 if __name__ == '__main__':
     answer1 = 20_281_182_715_321
-    answer2 = -999
+    answer2 = 159_490_400_628_354
     solve(solution1, solution2, (answer1, answer2))
