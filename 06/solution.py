@@ -7,33 +7,22 @@ from libaoc import solve
 
 def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
-
-    _map = Map()
-    _map.parse_map(data)
-
-    _map.display()
-
-    while _map.guard_on_map:
-        _map.step()
-
-    _map.display()
-
-    return _map.visited
+    _map = Map(data)
+    path = _map.get_path()
+    return len(path)
 
 
 def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
-    _map = Map()
-    _map.parse_map(data)
+    _map = Map(data)
+    path = _map.get_path()
+    
+    loops = 0
+    for point in path:
+        _map.get_path(obstacle=point)
+        loops += int(_map.has_loop)
 
-    _map.display()
-
-    while _map.guard_on_map:
-        _map.step(find_loop_obstacles=True)
-
-    _map.display()
-
-    return _map.obstacles
+    return loops
 
 
 def parse_input(input_path: Path) -> str:
@@ -43,5 +32,5 @@ def parse_input(input_path: Path) -> str:
 
 if __name__ == '__main__':
     answer1 = 4988
-    answer2 = -999
+    answer2 = -999 # Not 1774
     solve(solution1, solution2, (answer1, answer2))
