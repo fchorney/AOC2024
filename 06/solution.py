@@ -32,5 +32,5 @@ def parse_input(input_path: Path) -> str:
 
 if __name__ == '__main__':
     answer1 = 4988
-    answer2 = -999 # Not 1774
+    answer2 = 1697
     solve(solution1, solution2, (answer1, answer2))
