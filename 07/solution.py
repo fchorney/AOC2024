@@ -6,7 +6,10 @@ from libaoc import solve
 from libaoc.utils import chunks
 
 
-def solve_eq(eq: list[int | str], test: int) -> bool:
+def solve_eq(test: int, values: list[str], permutation: tuple[str, ...]) -> bool:
+    _eq = [list(z) for z in zip(values, permutation)]
+    eq = [int(x) if x.isnumeric() else x for xs in _eq for x in xs] + [int(values[-1])]
+
     result = eq[0]
     for op, v in chunks(eq[1:], 2):
         match op:
@@ -30,10 +33,7 @@ def solve_part_1(data: dict[int, list[str]]) -> tuple[set[int], set[int]]:
         permutations = itertools.product(['+', '*'], repeat=slots)
 
         for p in permutations:
-            _eq = [list(z) for z in zip(v, p)]
-            eq = [int(x) if x.isnumeric() else x for xs in _eq for x in xs] + [int(v[-1])]
-
-            if solve_eq(eq, t):
+            if solve_eq(t, v, p):
                 solved.add(t)
                 break
         else:
@@ -61,13 +61,7 @@ def solution2(input_path: Path) -> int:
 
         for p in permutations:
             # We've already tried the +, * combos, only try the combos with concat
-            if '||' not in p:
-                continue
-
-            _eq = [list(z) for z in zip(v, p)]
-            eq = [int(x) if x.isnumeric() else x for xs in _eq for x in xs] + [int(v[-1])]
-
-            if solve_eq(eq, t):
+            if '||' in p and solve_eq(t, v, p):
                 solved.add(t)
                 break
 
