@@ -8,14 +8,14 @@ from libaoc import solve
 def solution1(input_path: Path) -> int:
     data = parse_input(input_path)
     ic(data)
-    
+
     return -1
 
 
 def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
     ic(data)
-    
+
     return -1
 
 

@@ -30,7 +30,7 @@ class Map:
         self._original_loc: Point | None = None
         self._parse_map(data)
         self._init()
-        
+
     def _init(self) -> None:
         self._guard_on_map = True
         self._guard_loc: Point | None = self._original_loc
@@ -47,7 +47,6 @@ class Map:
             for c_idx, item in enumerate(row):
                 if item in self._guard_chars:
                     self._original_loc = Point(r_idx, c_idx)
-
 
     def _direction_char(self) -> str:
         match self._guard_dir:
@@ -131,16 +130,15 @@ class Map:
 
         # Move to the next step
         self._move(next_step, next_direction)
-            
 
     def get_path(self, obstacle: Point | None = None) -> set[Point]:
         self._init()
-        
+
         path: set[Point] = set()
         while self._guard_on_map and not self.has_loop:
             path.add(self._guard_loc)
             self._step(obstacle)
-            
+
         return path
 
     def display(self) -> None:

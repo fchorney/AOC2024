@@ -16,7 +16,7 @@ def solution2(input_path: Path) -> int:
     data = parse_input(input_path)
     _map = Map(data)
     path = _map.get_path()
-    
+
     loops = 0
     for point in path:
         _map.get_path(obstacle=point)

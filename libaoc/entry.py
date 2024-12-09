@@ -8,9 +8,7 @@ from icecream import ic
 SOLUTION_CALLABLE: type = Callable[[Path], int]
 
 
-def run_test(
-    solution1: SOLUTION_CALLABLE, solution2: SOLUTION_CALLABLE, pargs
-) -> int:
+def run_test(solution1: SOLUTION_CALLABLE, solution2: SOLUTION_CALLABLE, pargs) -> int:
     if pargs.quiet:
         print('Quiet Mode: On')
         ic.disable()
@@ -56,7 +54,7 @@ def run(
         return -1
 
     if correct_values is None:
-        print("No correct values submitted. Exiting")
+        print('No correct values submitted. Exiting')
         return -1
 
     for idx in [1, 2]:
@@ -65,7 +63,7 @@ def run(
 
         if (sol := sol_fn(input_path)) == correct_values[idx - 1]:
             dt = (time.time() - t) * 1000
-            time_str = f"{dt:.3f}ms" if dt < 1000 else f"{dt / 1000:.3f}s"
+            time_str = f'{dt:.3f}ms' if dt < 1000 else f'{dt / 1000:.3f}s'
             print(f'Solution {idx} successfully passed: {sol} solved in {time_str}')
         else:
             print(f'Solution {idx} failed with answer: {sol}')
