@@ -15,8 +15,9 @@ def find_next_space(ptr: int, data: list[int]) -> int:
         if item == -1:
             return idx
 
+
 def find_next_file(ptr: int, data: list[int]) -> int:
-    for idx, item in enumerate(data[0:ptr + 1][::-1]):
+    for idx, item in enumerate(data[0 : ptr + 1][::-1]):
         if item != -1:
             return ptr - idx
 
@@ -45,6 +46,7 @@ def solution1(input_path: Path) -> int:
 
     return calc_checksum(data)
 
+
 @dataclass
 class File:
     fid: int
@@ -58,7 +60,8 @@ class File:
         return self.fid == other.fid
 
     def __repr__(self) -> str:
-        return f"File(fid={self.fid}, size={self.size}, idx={self.idx})"
+        return f'File(fid={self.fid}, size={self.size}, idx={self.idx})'
+
 
 @dataclass
 class Space:
@@ -72,13 +75,18 @@ class Space:
         return self.idx == other.idx
 
     def __repr__(self) -> str:
-        return f"Space(size={self.size}, idx={self.idx})"
+        return f'Space(size={self.size}, idx={self.idx})'
+
 
 def swap(data: list[int], space: Space, file: File) -> None:
-    data[space.idx : space.idx + file.size], data[file.idx : file.idx + file.size] = data[file.idx : file.idx + file.size], data[space.idx : space.idx + file.size]
+    data[space.idx : space.idx + file.size], data[file.idx : file.idx + file.size] = (
+        data[file.idx : file.idx + file.size],
+        data[space.idx : space.idx + file.size],
+    )
+
 
 def solution2(input_path: Path) -> int:
-    data, space_map, space_idx_map, files = parse_input(input_path)
+    data, space_map, files = parse_input(input_path)
     ic(data_str(data))
 
     # 00...111...2...333.44.5555.6666.777.888899
@@ -91,8 +99,7 @@ def solution2(input_path: Path) -> int:
 
         candidates = sorted(
             filter(
-                lambda c: c.idx < file.idx,
-                itertools.chain(*[space_map[k] for k in space_map.keys() if k >= file.size])
+                lambda c: c.idx < file.idx, itertools.chain(*[space_map[k] for k in space_map.keys() if k >= file.size])
             ),
             key=lambda k: k.idx,
         )
@@ -103,9 +110,8 @@ def solution2(input_path: Path) -> int:
         space = candidates[0]
         swap(data, space, file)
 
-        # Remove the space from the maps
+        # Remove the space from the map
         space_map[space.size].remove(space)
-        del space_idx_map[space.idx]
 
         # Clean up space_map if we've removed all items for a key
         if len(space_map[space.size]) == 0:
@@ -121,7 +127,6 @@ def solution2(input_path: Path) -> int:
         # Put the space back into the maps
         space_map[space.size].append(space)
         space_map[space.size].sort()
-        space_idx_map[space.idx] = space
 
     ic(data_str(data))
 
@@ -131,10 +136,10 @@ def solution2(input_path: Path) -> int:
 def data_str(data: list[int]) -> str:
     return ''.join('.' if x == -1 else str(x) for x in data)
 
-def parse_input(input_path: Path) -> tuple[list[int], dict[int, list[Space]], dict[int, Space], list[File]]:
+
+def parse_input(input_path: Path) -> tuple[list[int], dict[int, list[Space]], list[File]]:
     data: list[int] = []
     space_map: dict[int, list[Space]] = defaultdict(list)
-    space_idx_map: dict[int, Space] = {}
     files: list[File] = []
     idx = 0
 
@@ -148,7 +153,6 @@ def parse_input(input_path: Path) -> tuple[list[int], dict[int, list[Space]], di
             if space != 0:
                 s = Space(space, idx + count)
                 space_map[space].append(s)
-                space_idx_map[s.idx] = s
 
             data.extend(fid for _ in range(count))
             data.extend(-1 for _ in range(space))
@@ -158,7 +162,7 @@ def parse_input(input_path: Path) -> tuple[list[int], dict[int, list[Space]], di
 
     # Sort internal space lists by size
     [space_map[k].sort() for k in space_map.keys()]
-    return data, space_map, space_idx_map, sorted(files, reverse=True)
+    return data, space_map, sorted(files, reverse=True)
 
 
 if __name__ == '__main__':
