@@ -60,13 +60,15 @@ def run(
     for idx in [1, 2]:
         sol_fn = solution1 if idx == 1 else solution2
         t = time.time()
+        solution = sol_fn(input_path)
+        dt = (time.time() - t) * 1000
+        time_str = f'{dt:.3f}ms' if dt < 1000 else f'{dt / 1000:.3f}s'
 
-        if (sol := sol_fn(input_path)) == correct_values[idx - 1]:
-            dt = (time.time() - t) * 1000
-            time_str = f'{dt:.3f}ms' if dt < 1000 else f'{dt / 1000:.3f}s'
-            print(f'Solution {idx} successfully passed: {sol} solved in {time_str}')
+        if solution == correct_values[idx - 1]:
+            print(f'Solution {idx} successfully passed: {solution}')
         else:
-            print(f'Solution {idx} failed with answer: {sol}')
+            print(f'Solution {idx} failed with answer: {solution}')
+        print(f"solved in {time_str}")
 
     return 0
 
