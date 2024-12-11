@@ -9,34 +9,48 @@ def solution1(input_path: Path) -> int:
     stones = parse_input(input_path)
     ic(stones)
 
-    for blink in range(28):
+    for _ in range(25):
         idx = 0
         while idx < len(stones):
-            idx = transform(stones, idx) + 1
+            idx = blink(stones, idx) + 1
     return len(stones)
 
 
 def solution2(input_path: Path) -> int:
-    data = parse_input(input_path)
-    ic(data)
+    stones = parse_input(input_path)
+    ic(stones)
+
+    count = 0
+    idx = 0
+
+    for _ in range(25):
+        pass
 
     return -1
 
-def transform(stones: list[int], idx: int) -> int:
-    value = stones[idx]
-    str_value = str(value)
+def transform(stone: int) -> tuple[int, ...]:
+    stone_str = str(stone)
+    stone_len = len(stone_str)
 
-    if value == 0:
-        stones[idx] = 1
-    elif (str_len := len(str_value)) % 2 == 0:
-        left = int(str_value[:str_len // 2])
-        right = int(str_value[str_len // 2:])
-        stones[idx] = left
-        stones.insert(idx + 1, right)
-        return idx + 1
-    else:
-        stones[idx] *= 2024
-    return idx
+    if stone == 0:
+        return (1,)
+    elif stone_len % 2 == 0:
+        left = int(stone_str[:stone_len // 2])
+        right = int(stone_str[stone_len // 2:])
+        return (left, right,)
+
+    return (stone * 2024,)
+
+def blink(stones: list[int], idx: int) -> int:
+    result = transform(stones[idx])
+
+    if len(result) == 1:
+        stones[idx] = result[0]
+        return idx
+
+    stones[idx] = result[0]
+    stones.insert(idx + 1, result[1])
+    return idx + 1
 
 
 def parse_input(input_path: Path) -> list[int]:
