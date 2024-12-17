@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from enum import IntEnum
 from typing import Self, TypeVar
 
-T = TypeVar('T', default=int)
+T = TypeVar('T', default=str)
 
 
 class Direction(IntEnum):
@@ -11,6 +11,10 @@ class Direction(IntEnum):
     East = 2
     South = 3
     West = 4
+
+    @classmethod
+    def cardinals(cls) -> tuple[Self, Self, Self, Self]:
+        return (Direction.North, Direction.East, Direction.South, Direction.West)
 
 
 @dataclass
@@ -58,6 +62,12 @@ class Point:
 
     def __abs__(self) -> Self:
         return Point(abs(self.row), abs(self.col))
+
+    def __eq__(self, other: Self) -> bool:
+        return self.row == other.row and self.col == other.col
+
+    def __lt__(self, other: Self) -> bool:
+        return self.row < other.row or (self.row == other.row and self.col < other.col)
 
     def __hash__(self) -> int:
         return hash((self.row, self.col))

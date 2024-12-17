@@ -68,7 +68,7 @@ def run(
             print(f'Solution {idx} successfully passed: {solution}')
         else:
             print(f'Solution {idx} failed with answer: {solution}')
-        print(f"solved in {time_str}")
+        print(f'solved in {time_str}')
 
     return 0
 
